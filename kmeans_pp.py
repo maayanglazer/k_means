@@ -34,6 +34,7 @@ def kmeans_pp(vectors, N, k):
         Dx = Dx / np.sum(Dx)
         new_point = np.random.choice(N, 1, p=Dx)[0]
         chosen_indices.append(new_point)
+    chosen_vectors = [vectors.iloc[i].drop(0).to_numpy() for i in chosen_indices]
 
 
 if __name__ == '__main__':
