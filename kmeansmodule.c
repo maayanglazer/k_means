@@ -227,6 +227,12 @@ void initLayer(double ***layer, int rows, int cols)
     }
 }
 
+typedef struct _object
+{
+    Py_ssize_t ob_refcnt;
+    struct _typeobject *ob_type;
+} PyObject;
+
 static PyObject *kmeans(PyObject *self, PyObject *args)
 {
     int K;
