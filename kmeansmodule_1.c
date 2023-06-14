@@ -1,16 +1,11 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
-void fit(int K)
+int fit(int K)
 {
     printf("what what \n");
+    return 0;
 }
-
-typedef struct _object
-{
-    Py_ssize_t ob_refcnt;
-    struct _typeobject *ob_type;
-} PyObject;
 
 static PyObject *kmeans(PyObject *self, PyObject *args)
 {

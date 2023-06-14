@@ -3,6 +3,7 @@ import sys
 import pandas as pd
 import random
 import numpy as np
+import mykmeans
 
 
 def euclid_dist(vector1, vector2):
