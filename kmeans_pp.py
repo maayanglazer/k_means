@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import random
 import numpy as np
-import mykmeans
+import mykmeanssp
 
 
 def euclid_dist(vector1, vector2):
@@ -12,9 +12,11 @@ def euclid_dist(vector1, vector2):
 
 def calc_dx(i, vectors, chosen_indices):
     min_dist = math.inf
-    vector1 = vectors.iloc[i].drop(0).to_numpy()
+    vector1 = vectors.iloc[i].drop(0)
+    vector1 = np.array(vector1)
     for j in chosen_indices:
-        vector2 = vectors.iloc[j].drop(0).to_numpy()
+        vector2 = vectors.iloc[j].drop(0)
+        vector2 = np.array(vector2)
         dist = euclid_dist(vector1, vector2)
         if dist < min_dist:
             min_dist = dist
@@ -35,56 +37,56 @@ def kmeans_pp(vectors, N, k):
         Dx = Dx / np.sum(Dx)
         new_point = np.random.choice(N, 1, p=Dx)[0]
         chosen_indices.append(new_point)
-    chosen_vectors = [vectors.iloc[i].drop(0).to_numpy() for i in chosen_indices]
+    print(chosen_indices)
+    # chosen_vectors = [vectors.iloc[i].drop(0).to_numpy() for i in chosen_indices]
 
 
 if __name__ == '__main__':
 
-    try:
-        K = sys.argv[1]
-        iter = 300
-        if len(sys.argv) == 6:
-            iter = sys.argv[2]
-            eps = sys.argv[3]
-            input_1 = sys.argv[4]
-            input_2 = sys.argv[5]
-        elif len(sys.argv) == 5:
-            eps = sys.argv[2]
-            input_1 = sys.argv[3]
-            input_2 = sys.argv[4]
+    K = sys.argv[1]
+    iter = 300
+    if len(sys.argv) == 6:
+        iter = sys.argv[2]
+        eps = sys.argv[3]
+        input_1 = sys.argv[4]
+        input_2 = sys.argv[5]
+    elif len(sys.argv) == 5:
+        eps = sys.argv[2]
+        input_1 = sys.argv[3]
+        input_2 = sys.argv[4]
 
-        df1 = pd.read_csv(input_1, sep=",", header=None)
-        df2 = pd.read_csv(input_2, sep=",", header=None)
-        df_inner = pd.merge(df1, df2, on=0, how='inner')
-        df_sorted = df_inner.sort_values(0)
-        N = len(df_sorted.index)
+    df1 = pd.read_csv(input_1, sep=",", header=None)
+    df2 = pd.read_csv(input_2, sep=",", header=None)
+    df_inner = pd.merge(df1, df2, on=0, how='inner')
+    df_sorted = df_inner.sort_values(0)
+    N = len(df_sorted.index)
 
-        # check errors
-        error = False
-        if not str.isdigit(K):
-            print("Invalid number of clusters!")
-            error = True
-        elif int(K) >= N or int(K) <= 1:
-            print("Invalid number of clusters!")
-            error = True
+    # check errors
+    error = False
+    if not str.isdigit(K):
+        print("Invalid number of clusters!")
+        error = True
+    elif int(K) >= N or int(K) <= 1:
+        print("Invalid number of clusters!")
+        error = True
 
-        if not str.isdigit(iter):
-            print("Invalid maximum iteration!")
-            error = True
-        elif int(iter) >= 1000 or int(iter) <= 1:
-            print("Invalid maximum iteration!")
-            error = True
+    if not str.isdigit(iter):
+        print("Invalid maximum iteration!")
+        error = True
+    elif int(iter) >= 1000 or int(iter) <= 1:
+        print("Invalid maximum iteration!")
+        error = True
 
-        if error:
-            exit(1)
-
-        K = int(K)
-        iter = int(iter)
-
-        kmeans_pp(df_sorted, N, K)
-
-
-
-    except Exception as e:
-        print("An Error Has Occurred")
+    if error:
         exit(1)
+
+    K = int(K)
+    iter = int(iter)
+
+    kmeans_pp(df_sorted, N, K)
+
+
+
+    # except Exception as e:
+    #     print("An Error Has Occurred")
+    #     exit(1)
