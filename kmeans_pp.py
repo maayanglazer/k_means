@@ -39,7 +39,6 @@ def kmeans_pp(vectors, N, k, iter, eps):
         chosen_indices.append(new_point)
     print(chosen_indices)
     chosen_vectors = [np.array(vectors.iloc[i].drop(0)).tolist() for i in chosen_indices]
-    print(chosen_vectors)
     vectors = [np.array(vectors.iloc[i].drop(0)).tolist() for i in range(vectors.shape[0])]
     k_array = mykmeanssp.fit(K, iter, chosen_vectors, vectors, len(vectors[0]), len(vectors), eps)
     print(k_array)
