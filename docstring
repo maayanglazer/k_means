@@ -1,0 +1,26 @@
+"""
+    Perform the k-means clustering algorithm to fit the data.
+
+    Args:
+        K (int): The number of clusters.
+        iter (int): The maximum number of iterations.
+        k_array (List[List[float]]): The initial centroids of the clusters.
+        vectors (List[List[float]]): The data points to be clustered.
+        dim (int): The dimensionality of the data points.
+
+    Returns:
+        List[List[float]]: The updated centroids after fitting the data.
+
+    Raises:
+        TypeError: If any of the input arguments are of incorrect type.
+        ValueError: If any of the input arguments have invalid values.
+
+    Notes:
+        - The `k_array` and `vectors` lists should have `K` and `n` elements respectively,
+          where `n` is the number of data points.
+        - Each element of `k_array` and `vectors` should be a list of `dim` floating-point values.
+        - The function applies the k-means algorithm to cluster the `vectors` based on the initial
+          centroids provided in `k_array`. It performs the clustering for a maximum of `iter`
+          iterations or until convergence.
+        - The function updates the centroids of the clusters and returns the final centroids.
+    """
