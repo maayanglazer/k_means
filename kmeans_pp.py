@@ -1,7 +1,6 @@
 import math
 import sys
 import pandas as pd
-import random
 import numpy as np
 import mykmeanssp
 
@@ -23,9 +22,10 @@ def calc_dx(i, vectors, chosen_indices):
     return min_dist
 
 
-def kmeans_pp(vectors, N, k):
+def kmeans_pp(vectors, N, k, iter):
     # if K=N return vectors
-    rand_vector = random.randint(0, N - 1)
+    np.random.seed(0)
+    rand_vector = np.random.choice([i for i in range(N - 1)])
     chosen_indices = [rand_vector]
     num_chosen = 1
 
@@ -37,12 +37,15 @@ def kmeans_pp(vectors, N, k):
         Dx = Dx / np.sum(Dx)
         new_point = np.random.choice(N, 1, p=Dx)[0]
         chosen_indices.append(new_point)
-    print(chosen_indices)
-    # chosen_vectors = [vectors.iloc[i].drop(0).to_numpy() for i in chosen_indices]
+    chosen_vectors = [vectors.iloc[i].drop(0) for i in chosen_indices]
+    chosen_vectors = chosen_vectors
+    k_array = mykmeanssp.fit(K, iter, chosen_vectors, vectors, vectors.shape[1] - 1, vectors.shape[0])
+    print(k_array)
 
 
 if __name__ == '__main__':
 
+    # try:
     K = sys.argv[1]
     iter = 300
     if len(sys.argv) == 6:
@@ -83,7 +86,7 @@ if __name__ == '__main__':
     K = int(K)
     iter = int(iter)
 
-    kmeans_pp(df_sorted, N, K)
+    kmeans_pp(df_sorted, N, K, iter)
 
 
 

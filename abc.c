@@ -160,57 +160,7 @@ void print(double **arr, int m, int n)
 
 double **fit(int K, int iter, double **k_array, double **vectors, int dim)
 {
-    double min_dist, dist;
-    int min_elem;
-    double *tmp_vector;
-    double max_delta = 0.02;
-    int iteration_number = 0;
-    int i, j;
-    delta_k = zeros(K);
-    elem_in_cluster = zeros(K);
-    initLayer(&sum_for_cluster, K, dim);
-
-    printf("K: %d\n", K);
-    printf("iter: %d\n", iter);
-    printf("dim: %d\n", dim);
-
-    print(k_array, K, dim);
-
-    do
-    {
-        iteration_number++;
-        for (i = 0; i < K; i++)
-        {
-            delta_k[i] = 0.0;
-            elem_in_cluster[i] = 0.0;
-            for (j = 0; j < dim; j++)
-            {
-                sum_for_cluster[i][j] = 0.0;
-            }
-        }
-
-        for (i = 0; i < vectors_num; i++)
-        {
-            min_dist = get_eclidean_dist(vectors[i], k_array[0]);
-            min_elem = 0;
-            for (j = 0; j < K; j++)
-            {
-                dist = get_eclidean_dist(vectors[i], k_array[j]);
-                if (dist < min_dist)
-                {
-                    min_dist = dist;
-                    min_elem = j;
-                }
-            }
-            tmp_vector = sum_for_cluster[min_elem];
-            sum_for_cluster[min_elem] = add(vectors[i], sum_for_cluster[min_elem]);
-            free(tmp_vector);
-            elem_in_cluster[min_elem]++;
-        }
-        max_delta = update_clusters_and_delta(delta_k, sum_for_cluster, elem_in_cluster, k_array);
-
-    } while (!(max_delta < EPS || iteration_number == iter));
-
+    printf("Im here");
     return k_array;
 }
 
@@ -233,18 +183,22 @@ void initLayer(double ***layer, int rows, int cols)
     }
 }
 
-PyObject *makelist(double *array, int size) {
+PyObject *makelist(double *array, int size)
+{
     PyObject *l = PyList_New(size);
-    for (int i = 0; i != size; ++i) {
+    for (int i = 0; i != size; ++i)
+    {
         PyList_SET_ITEM(l, i, PyFloat_FromDouble(array[i]));
     }
     return l;
 }
 
-PyObject *makemat(double **mat, int rows, int cols) {
+PyObject *makemat(double **mat, int rows, int cols)
+{
     PyObject *l = PyList_New(rows);
-    for (int i = 0; i < rows; i++) {
-        PyList_SET_ITEM(l, i, makelist(mat[i],cols));
+    for (int i = 0; i < rows; i++)
+    {
+        PyList_SET_ITEM(l, i, makelist(mat[i], cols));
     }
     return l;
 }
