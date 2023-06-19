@@ -23,7 +23,7 @@ double *elem_in_cluster;
 int vectors_num = 0;
 int dim = 0;
 int K = 0;
-double EPS = 0.001;
+
 
 void generalError()
 {
@@ -158,7 +158,7 @@ void print(double **arr, int m, int n)
     printf("\n");
 }
 
-double **fit(int K, int iter, double **k_array, double **vectors, int dim)
+double **fit(int K, int iter, double **k_array, double **vectors, int dim, double EPS)
 {
     double min_dist, dist;
     int min_elem;
@@ -169,12 +169,6 @@ double **fit(int K, int iter, double **k_array, double **vectors, int dim)
     delta_k = zeros(K);
     elem_in_cluster = zeros(K);
     initLayer(&sum_for_cluster, K, dim);
-
-    printf("K: %d\n", K);
-    printf("iter: %d\n", iter);
-    printf("dim: %d\n", dim);
-
-    print(k_array, K, dim);
 
     do
     {
@@ -233,25 +227,29 @@ void initLayer(double ***layer, int rows, int cols)
     }
 }
 
-PyObject *makelist(double *array, int size) {
+PyObject *makelist(double *array, int size)
+{
     PyObject *l = PyList_New(size);
-    for (int i = 0; i != size; ++i) {
+    for (int i = 0; i != size; ++i)
+    {
         PyList_SET_ITEM(l, i, PyFloat_FromDouble(array[i]));
     }
     return l;
 }
 
-PyObject *makemat(double **mat, int rows, int cols) {
+PyObject *makemat(double **mat, int rows, int cols)
+{
     PyObject *l = PyList_New(rows);
-    for (int i = 0; i < rows; i++) {
-        PyList_SET_ITEM(l, i, makelist(mat[i],cols));
+    for (int i = 0; i < rows; i++)
+    {
+        PyList_SET_ITEM(l, i, makelist(mat[i], cols));
     }
     return l;
 }
 
 static PyObject *kmeans(PyObject *self, PyObject *args)
 {
-    int K;
+    int K_input;
     int iter;
     PyObject *k_array_input;
     PyObject *vectors_input;
@@ -259,15 +257,20 @@ static PyObject *kmeans(PyObject *self, PyObject *args)
     double **k_array;
     double **vectors;
     PyObject *input_vector;
-    int dim;
+    int dim_input;
     int n, i, j;
+    double EPS;
 
     /* This parses the Python arguments into a double (d)  variable named z and int (i) variable named n*/
-    if (!PyArg_ParseTuple(args, "iiOOii", &K, &iter, &k_array_input, &vectors_input, &dim, &n))
+    if (!PyArg_ParseTuple(args, "iiOOiid", &K_input, &iter, &k_array_input, &vectors_input, &dim_input, &n, &EPS))
     {
         return NULL; /* In the CPython API, a NULL value is never valid for a
                         PyObject* so it is used to signal that an error has occurred. */
     }
+
+    K = K_input;
+    dim = dim_input;
+    vectors_num = n;
 
     initLayer(&k_array, K, dim);
     for (i = 0; i < K; i++)
@@ -277,7 +280,7 @@ static PyObject *kmeans(PyObject *self, PyObject *args)
         {
             item = PyList_GetItem(input_vector, j);
             k_array[i][j] = PyFloat_AsDouble(item);
-            Py_DECREF(item);
+
         }
     }
 
@@ -289,13 +292,12 @@ static PyObject *kmeans(PyObject *self, PyObject *args)
         {
             item = PyList_GetItem(input_vector, j);
             vectors[i][j] = PyFloat_AsDouble(item);
-            Py_DECREF(item);
+   
         }
     }
 
     /* This builds the answer ("d" = Convert a C double to a Python floating point number) back into a python object */
-    print(k_array, K, dim);
-    PyObject *res = makemat(fit(K, iter, k_array, vectors, dim), K, dim);
+    PyObject *res = makemat(fit(K, iter, k_array, vectors, dim, EPS), K, dim);
     free_2d(k_array, K);
     free_2d(vectors, n);
     return res; /*  Py_BuildValue(...) returns a PyObject*  */

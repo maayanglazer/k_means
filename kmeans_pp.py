@@ -22,7 +22,7 @@ def calc_dx(i, vectors, chosen_indices):
     return min_dist
 
 
-def kmeans_pp(vectors, N, k, iter):
+def kmeans_pp(vectors, N, k, iter, eps):
     # if K=N return vectors
     np.random.seed(0)
     rand_vector = np.random.choice([i for i in range(N - 1)])
@@ -37,11 +37,12 @@ def kmeans_pp(vectors, N, k, iter):
         Dx = Dx / np.sum(Dx)
         new_point = np.random.choice(N, 1, p=Dx)[0]
         chosen_indices.append(new_point)
-    chosen_vectors = [vectors.iloc[i].drop(0) for i in chosen_indices]
-    chosen_vectors = chosen_vectors
+    print(chosen_indices)
+    chosen_vectors = [np.array(vectors.iloc[i].drop(0)).tolist() for i in chosen_indices]
     print(chosen_vectors)
-    # k_array = mykmeanssp.fit(K, iter, chosen_vectors, vectors, vectors.shape[1] - 1, vectors.shape[0])
-    # print(k_array)
+    vectors = [np.array(vectors.iloc[i].drop(0)).tolist() for i in range(vectors.shape[0])]
+    k_array = mykmeanssp.fit(K, iter, chosen_vectors, vectors, len(vectors[0]), len(vectors), eps)
+    print(k_array)
 
 
 if __name__ == '__main__':
@@ -87,7 +88,7 @@ if __name__ == '__main__':
     K = int(K)
     iter = int(iter)
 
-    kmeans_pp(df_sorted, N, K, iter)
+    kmeans_pp(df_sorted, N, K, iter, float(eps))
 
 
 
