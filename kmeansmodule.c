@@ -27,8 +27,8 @@ int K = 0;
 
 void generalError()
 {
-    printf("An Error Has Occurred\n");
     free_all();
+    PyErr_SetString(PyExc_ValueError, "An Error Has Occurred\n");
     exit(1);
 }
 
@@ -308,7 +308,7 @@ static PyMethodDef kmeansMethods[] = {
      (PyCFunction)kmeans,          /* the C-function that implements the Python function and returns static PyObject*  */
      METH_VARARGS,                 /* flags indicating parameters
      accepted for this function */
-     PyDoc_STR("get the kmeans")}, /*  The docstring for the function */
+     PyDoc_STR("Perform the k-means clustering algorithm to fit the data.")}, /*  The docstring for the function */
     {NULL, NULL, 0, NULL}          /* The last entry must be all NULL as shown to act as a
                                       sentinel. Python looks for this entry to know that all
                                       of the functions for the module have been defined. */
